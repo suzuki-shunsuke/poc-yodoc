@@ -81,7 +81,7 @@ jobs:
       - run: |
           gh pr create \
             -t 'docs: generate document by yodoc' \
-            -b 'This pull request was created by yodoc' \
+            -b 'This pull request was created by [yodoc](https://github.com/suzuki-shunsuke/yodoc). [GitHub Actions]($GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID)' \
             -B main \
             -H "$BRANCH"
         if: |
