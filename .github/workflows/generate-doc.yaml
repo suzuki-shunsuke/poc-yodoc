@@ -38,7 +38,9 @@ jobs:
       - run: echo branch="generate-doc-$(date +%Y%m%dT%H%M%S)" >> "$GITHUB_OUTPUT"
         id: branch
       - run: |
-          ghcp commit \
+          git diff --name-only && \
+          git ls-files --others --exclude-standard |
+          xargs ghcp commit \
             -r "$GITHUB_REPOSITORY" \
             -b "$BRANCH" \
             -m "docs: generate document by yodoc"
@@ -46,14 +48,11 @@ jobs:
           GITHUB_TOKEN: ${{steps.token.outputs.token}}
           BRANCH: "${{steps.branch.outputs.branch}}"
       - run: |
-          git diff --name-only > changed_files.txt
-          git ls-files --others --exclude-standard >> changed_files.txt
-      - run: |
-          xargs gh pr create \
+          gh pr create \
             -t 'docs: generate document by yodoc' \
             -b 'This pull request was created by yodoc' \
             -B main \
-            -H "$BRANCH" < changed_files.txt
+            -H "$BRANCH"
         env:
           GITHUB_TOKEN: ${{steps.token.outputs.token}}
           BRANCH: "${{steps.branch.outputs.branch}}"
