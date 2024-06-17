@@ -6,7 +6,7 @@ on:
     branches: [main]
 
 jobs:
-  generate-doc:
+  test:
     runs-on: ubuntu-latest
     permissions: {}
     steps:
