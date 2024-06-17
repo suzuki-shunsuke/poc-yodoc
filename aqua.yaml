@@ -1,0 +1,13 @@
+---
+# aqua - Declarative CLI Version Manager
+# https://aquaproj.github.io/
+# checksum:
+#   enabled: true
+#   require_checksum: true
+#   supported_envs:
+#   - all
+registries:
+- type: standard
+  ref: b4355b5a02210b0d2311b01110e2562b0ba7ef0a
+packages:
+- name: suzuki-shunsuke/yodoc@v0.1.0
