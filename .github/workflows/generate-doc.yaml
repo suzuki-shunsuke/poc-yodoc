@@ -1,0 +1,59 @@
+---
+name: generate-doc
+
+on:
+  workflow_dispatch: {}
+  push:
+    branches: [main]
+
+permissions: {}
+
+jobs:
+  generate-doc:
+    runs-on: ubuntu-latest
+    permissions: {}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+      - uses: aquaproj/aqua-installer@6ce1f8848ec8e61f14d57bd5d7597057a6dd187c # v3.0.1
+        with:
+          aqua_version: v2.29.0
+        env:
+          AQUA_GITHUB_TOKEN: ${{github.token}}
+      - id: token
+        uses: tibdex/github-app-token@3beb63f4bd073e61482598c45c71c1019b59b73a # v2.1.0
+        with:
+          app_id: ${{secrets.APP_ID}}
+          private_key: ${{secrets.APP_PRIVATE_KEY}}
+          permissions: >-
+            {
+              "pull_requests": "write",
+              "contents": "write"
+            }
+          repositories: >-
+            [
+              "${{github.event.repository.name}}"
+            ]
+      - run: yodoc run
+      - run: echo branch="generate-doc-$(date +%Y%m%dT%H%M%S)" >> "$GITHUB_OUTPUT"
+        id: branch
+      - run: |
+          ghcp commit \
+            -r "$GITHUB_REPOSITORY" \
+            -b "$BRANCH" \
+            -m "docs: generate document by yodoc"
+        env:
+          GITHUB_TOKEN: ${{steps.token.outputs.token}}
+          BRANCH: "${{steps.branch.outputs.branch}}"
+      - run: |
+          git diff --name-only > changed_files.txt
+          git ls-files --others --exclude-standard >> changed_files.txt
+      - run: |
+          xargs gh pr create \
+            -t 'docs: generate document by yodoc' \
+            -b 'This pull request was created by yodoc' \
+            -B main \
+            -H "$BRANCH" < changed_files.txt
+        env:
+          GITHUB_TOKEN: ${{steps.token.outputs.token}}
+          BRANCH: "${{steps.branch.outputs.branch}}"
