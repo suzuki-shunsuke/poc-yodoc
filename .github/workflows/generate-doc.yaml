@@ -6,12 +6,11 @@ on:
   push:
     branches: [main]
 
-permissions: {}
-
 jobs:
   generate-doc:
     runs-on: ubuntu-latest
-    permissions: {}
+    permissions:
+      contents: write
     steps:
       - name: Checkout
         uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
