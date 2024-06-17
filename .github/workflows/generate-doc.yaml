@@ -41,7 +41,7 @@ jobs:
       - run: |
           git diff --name-only > /tmp/changed_files.txt
           git ls-files --others --exclude-standard >> /tmp/changed_files.txt
-          if test -s /tmp/changed_files.txt; TEST_DOCKER_HUB_USERNAME:
+          if test -s /tmp/changed_files.txt; then
             echo changed=true >> "$GITHUB_OUTPUT"
           fi
         id: changed
