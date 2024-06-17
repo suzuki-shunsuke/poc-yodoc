@@ -55,7 +55,8 @@ jobs:
               -r "$GITHUB_REPOSITORY" \
               -b "$BRANCH" \
               -m "docs: generate document by yodoc" \
-              $(cat /tmp/changed_files.txt) -d "$(bash scripts/conv_one_line.sh < /tmp/deleted_files.txt)"
+              --delete-file /tmp/deleted_files.txt \
+              $(cat /tmp/changed_files.txt)
             exit 0
           fi
           if [ "$CHANGED" = true ]; then
