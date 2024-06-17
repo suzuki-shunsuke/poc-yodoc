@@ -84,7 +84,8 @@ jobs:
             -b 'This pull request was created by yodoc' \
             -B main \
             -H "$BRANCH"
-        if: steps.changed.outputs.changed == 'true'
+        if: |
+          steps.changed.outputs.changed == 'true' || steps.changed.outputs.deleted == 'true'
         env:
           GITHUB_TOKEN: ${{steps.token.outputs.token}}
           BRANCH: "${{steps.branch.outputs.branch}}"
