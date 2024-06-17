@@ -55,7 +55,7 @@ jobs:
               -r "$GITHUB_REPOSITORY" \
               -b "$BRANCH" \
               -m "docs: generate document by yodoc" \
-              $(cat changed_files.txt) -d "$(bash scripts/conv_one_line.sh < /tmp/deleted_files.txt)"
+              $(cat /tmp/changed_files.txt) -d "$(bash scripts/conv_one_line.sh < /tmp/deleted_files.txt)"
             exit 0
           fi
           if [ "$CHANGED" = true ]; then
@@ -63,7 +63,7 @@ jobs:
               -r "$GITHUB_REPOSITORY" \
               -b "$BRANCH" \
               -m "docs: generate document by yodoc" \
-              $(cat changed_files.txt)
+              $(cat /tmp/changed_files.txt)
             exit 0
           fi
           ghcp commit \
@@ -81,10 +81,11 @@ jobs:
       - run: |
           gh pr create \
             -t 'docs: generate document by yodoc' \
-            -b 'This pull request was created by yodoc' \
+            -b 'This pull request was created by [yodoc](https://github.com/suzuki-shunsuke/yodoc). [GitHub Actions]($GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID)' \
             -B main \
             -H "$BRANCH"
-        if: steps.changed.outputs.changed == 'true'
+        if: |
+          steps.changed.outputs.changed == 'true' || steps.changed.outputs.deleted == 'true'
         env:
           GITHUB_TOKEN: ${{steps.token.outputs.token}}
           BRANCH: "${{steps.branch.outputs.branch}}"
