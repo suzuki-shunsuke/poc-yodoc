@@ -13,6 +13,7 @@ jobs:
     outputs:
       pr_url: ${{fromJson(steps.pr.outputs.payload).html_url}}
       pr_number: ${{steps.pr.outputs.number}}
+      pr_author: ${{fromJson(steps.pr.outputs.payload).user.login}}
       ignored: |
         ${{fromJson(steps.pr.outputs.payload).user.login == 'suzuki-shunsuke-app[bot]' && steps.pr.outputs.title == 'docs: generate document by yodoc'}}
     steps:
@@ -25,11 +26,13 @@ jobs:
           echo "TITLE: $TITLE"
           echo "PR URL: $PR_URL"
           echo "PR Number: $PR_NUMBER"
+          echo "PR Author: $PR_AUTHOR"
         env:
           LOGIN: ${{fromJson(steps.pr.outputs.payload).user.login}}
           TITLE: ${{steps.pr.outputs.title}}
           PR_NUMBER: ${{steps.pr.outputs.number}}
           PR_URL: ${{fromJson(steps.pr.outputs.payload).html_url}}
+          PR_AUTHOR: ${{fromJson(steps.pr.outputs.payload).user.login}}
   generate-doc:
     runs-on: ubuntu-latest
     needs: check-generate-doc
@@ -125,8 +128,9 @@ jobs:
           BRANCH: "${{steps.branch.outputs.branch}}"
           PR_URL: "${{needs.check-generate-doc.outputs.pr_url}}"
 
-      - run: github-comment post -k fail-generate-doc
+      - run: github-comment post -k fail-generate-doc -var "pr_author:$PR_AUTHOR"
         if: failure()
         env:
           GITHUB_TOKEN: ${{github.token}}
           GH_COMMENT_PR_NUMBER: ${{needs.check-generate-doc.outputs.pr_number}}
+          PR_AUTHOR: ${{needs.check-generate-doc.outputs.pr_author}}

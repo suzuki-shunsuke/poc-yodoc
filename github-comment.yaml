@@ -4,6 +4,8 @@ post:
   fail-generate-doc:
     template: |
       ## :x: Failed to generate document
+
+      @{{.Vars.pr_author}}
       
       Please check the failed workflow run.
 
