@@ -10,5 +10,14 @@ gh version
 ```
 
 ```
-{{.CombinedOutput -}
+{{.CombinedOutput -}}
+```
+
+```
+#-yodoc run
+yodoc -v
+```
+
+```
+{{.CombinedOutput -}}
 ```
