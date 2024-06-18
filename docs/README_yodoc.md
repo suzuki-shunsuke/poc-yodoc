@@ -10,5 +10,5 @@ gh version
 ```
 
 ```
-{{.CombinedOutput -}}
+{{.CombinedOutput -}
 ```

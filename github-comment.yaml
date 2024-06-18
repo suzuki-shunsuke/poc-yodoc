@@ -1,0 +1,10 @@
+---
+# https://github.com/suzuki-shunsuke/github-comment
+post:
+  fail-generate-doc:
+    template: |
+      ## :x: Failed to generate document
+      
+      Please check the failed workflow run.
+
+      {{template "link" .}}
