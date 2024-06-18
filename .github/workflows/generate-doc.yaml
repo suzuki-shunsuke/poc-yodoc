@@ -7,13 +7,39 @@ on:
     branches: [main]
 
 jobs:
+  check-generate-doc:
+    runs-on: ubuntu-latest
+    permissions: {}
+    outputs:
+      pr_url: ${{fromJson(steps.pr.outputs.payload).html_url}}
+      ignored: |
+        ${{fromJson(steps.pr.outputs.payload).user.login == 'suzuki-shunsuke-app[bot]' && steps.pr.outputs.title == 'docs: generate document by yodoc'}}
+    steps:
+      - uses: suzuki-shunsuke/gh-find-current-pr@52df560f9181a2d5aaffd3b6934f5921b48920f4
+        id: pr
+        with:
+          state: closed
+      - run: |
+          echo "LOGIN: $LOGIN"
+          echo "TITLE: $TITLE"
+          echo "PR URL: $PR_URL"
+        env:
+          LOGIN: ${{fromJson(steps.pr.outputs.payload).user.login}}
+          TITLE: ${{steps.pr.outputs.title}}
+          PR_URL: ${{fromJson(steps.pr.outputs.payload).html_url}}
   generate-doc:
     runs-on: ubuntu-latest
+    needs: check-generate-doc
     permissions:
       contents: write
+    # prevent infinite loop
+    if: needs.check-generate-doc.outputs.ignored != 'true'
     steps:
-      - name: Checkout
-        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+      - uses: suzuki-shunsuke/gh-find-current-pr@52df560f9181a2d5aaffd3b6934f5921b48920f4
+        id: pr
+        with:
+          state: closed
       - uses: aquaproj/aqua-installer@6ce1f8848ec8e61f14d57bd5d7597057a6dd187c # v3.0.1
         with:
           aqua_version: v2.29.0
@@ -80,9 +106,12 @@ jobs:
           CHANGED: "${{steps.changed.outputs.changed}}"
           DELETED: "${{steps.changed.outputs.deleted}}"
       - run: |
+          body="This pull request was created by [yodoc](https://github.com/suzuki-shunsuke/yodoc).
+          [GitHub Actions]($GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID)
+          [Pull Request]($PR_URL)"
           gh pr create \
             -t 'docs: generate document by yodoc' \
-            -b "This pull request was created by [yodoc](https://github.com/suzuki-shunsuke/yodoc). [GitHub Actions]($GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID)" \
+            -b "$body" \
             -B main \
             -H "$BRANCH"
         if: |
@@ -90,3 +119,4 @@ jobs:
         env:
           GITHUB_TOKEN: ${{steps.token.outputs.token}}
           BRANCH: "${{steps.branch.outputs.branch}}"
+          PR_URL: "${{needs.check-generate-doc.outputs.pr_url}}"
