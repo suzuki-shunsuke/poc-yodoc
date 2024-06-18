@@ -11,3 +11,16 @@ jobs:
     permissions: {}
     steps:
       - run: echo test
+
+  auto-merge:
+    runs-on: ubuntu-latest
+    permissions: {}
+    if: |
+      github.event.pull_request.user.login == 'suzuki-shunsuke-app[bot]' && github.event.pull_request.title == 'docs: generate document by yodoc'
+    steps:
+      - uses: suzuki-shunsuke/enable-auto-merge-action@v0.1.0
+        with:
+          pr_number: ${{github.event.pull_request.number}}
+          merge_method: squash
+          github_app_id: ${{secrets.APP_ID}}
+          github_app_private_key: ${{secrets.APP_PRIVATE_KEY}}
