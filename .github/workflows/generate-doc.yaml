@@ -9,6 +9,7 @@ on:
 jobs:
   check-generate-doc:
     uses: suzuki-shunsuke/yodoc-workflow/.github/workflows/create-pr.yaml@first-pr
+    permissions: {}
     with:
       base_branch: main
       author: 'suzuki-shunsuke-app[bot]'
