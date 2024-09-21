@@ -4,8 +4,8 @@
 gh version
 ```
 ```
-gh version 2.55.0 (2024-08-20)
-https://github.com/cli/cli/releases/tag/v2.55.0
+gh version 2.56.0 (2024-09-09)
+https://github.com/cli/cli/releases/tag/v2.56.0
 ```
 ```
 yodoc -v
