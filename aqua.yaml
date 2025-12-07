@@ -12,4 +12,4 @@ registries:
 packages:
 - name: suzuki-shunsuke/yodoc@v0.1.5
 - name: suzuki-shunsuke/ghcp@v1.16.0
-- name: suzuki-shunsuke/github-comment@v6.4.0
+- name: suzuki-shunsuke/github-comment@v6.4.1
